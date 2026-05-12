@@ -1,65 +1,66 @@
 #include "Session.h"
 
-void Session::handle_write(const boost::system::error_code& error)
+void Session::HandleWrite(const boost::system::error_code& error,shared_ptr<Session> _self_shared)
 {
 	if (!error)
 	{
-		memset(data, '\0', sizeof data);
-		_socket.async_read_some(boost::asio::buffer(data, max_size),
-			bind(&Session::handle_read, this, placeholders::_1,placeholders::_2));
+		lock_guard<mutex> lock(_send_lock);
+		_send_que.pop();
+		if (_send_que.size())
+		{
+			auto& msg = _send_que.front();
+			boost::asio::async_write(_socket, boost::asio::buffer(msg->_data,msg->max_len),
+				bind(&Session::HandleWrite, this, placeholders::_1, _self_shared));
+		}
 	}
 	else
 	{
-		delete this;
+		cout << "faild in HandleWrite error is: " << error.what() << endl;
+		_server->ClearSession(_self_shared->GetUuid());
 	}
 }
 
-void Session::handle_read(const boost::system::error_code& error, size_t bytes_transfered)
+void Session::HandleRead(const boost::system::error_code& error, size_t bytes_transfered, shared_ptr<Session> _self_shared)
 {
 	if (!error)
 	{
-		cout << "receive data is : ";
-		cout.write(data, bytes_transfered);
-		cout << endl;
-		boost::asio::async_write(_socket, boost::asio::buffer(data, bytes_transfered),
-			bind(&Session::handle_write, this, placeholders::_1));
+		cout << "receive data is : " << _data<< endl;
+
+		send(_data, bytes_transfered);
+
+		memset(_data, 0, sizeof _data);
+
+		_socket.async_read_some(boost::asio::buffer(_data, max_size),
+			bind(&Session::HandleRead, this, placeholders::_1, placeholders::_2, _self_shared));
 	}
 	else
 	{
-		delete this;
+		if(error != boost::asio::error::eof)
+		cout << "faild in HandleRead error is: " << error.what() << endl;
+
+		_server->ClearSession(_self_shared->GetUuid());
 	}
 }
 
 void Session::Start()
 {
-	memset(data, '\0', sizeof data);
-	_socket.async_read_some(boost::asio::buffer(data, max_size),
-		bind(&Session::handle_read, this, placeholders::_1, placeholders::_2));
+	memset(_data, 0, sizeof _data);
+	_socket.async_read_some(boost::asio::buffer(_data, max_size),
+		bind(&Session::HandleRead, this, placeholders::_1, placeholders::_2,shared_from_this()));
 }
 
-void Server::handle_accept(Session* session,const boost::system::error_code& error)
+void Session::send(char* msg,int max_length)
 {
-	if (!error)
-	{
-		session->Start();
-	}
-	else
-	{
-		delete session;
-	}
+	bool pending = false; // 判断发送队列是否为空
+	lock_guard<mutex> lock(_send_lock);//增加一个锁防止多个线程乱码
 
-	start_accept();
+	if (_send_que.size() > 0) pending = true;
+
+	_send_que.push(make_shared<MsgNode>(msg, max_length));
+
+	if (pending) return;
+
+	boost::asio::async_write(_socket, boost::asio::buffer(msg, max_length),
+		bind(&Session::HandleWrite, this, placeholders::_1, shared_from_this()));
 }
 
-void Server::start_accept()
-{
-	Session* session = new Session(_ioc);
-	_acceptor.async_accept(session->Socket(),
-		bind(&Server::handle_accept,this,session,placeholders::_1));
-}
-
-Server::Server(boost::asio::io_context& ioc, unsigned short port_num)
-	:_ioc(ioc), _acceptor(ioc, tcp::endpoint(tcp::v4(), port_num))
-{
-	start_accept();
-}

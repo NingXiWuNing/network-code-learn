@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="AsyncServer.vcxproj" />
+  <Project Path="AsyncServer.vcxproj" Id="2fa8f65a-e5a6-4fc3-8094-8ca5fb4c2567" />
 </Solution>

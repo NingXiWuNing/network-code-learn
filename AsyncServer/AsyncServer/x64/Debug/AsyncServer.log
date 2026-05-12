@@ -1,6 +1,11 @@
 ﻿  Session.cpp
+D:\github\boostasio-learn\AsyncServer\Session.cpp(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\github\boostasio-learn\AsyncServer\Session.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+  (编译源文件“Session.cpp”)
+  
   Please define _WIN32_WINNT or _WIN32_WINDOWS appropriately. For example:
   - add -D_WIN32_WINNT=0x0601 to the compiler command line; or
   - add _WIN32_WINNT=0x0601 to your project's Preprocessor Definitions.
   Assuming _WIN32_WINNT=0x0601 (i.e. Windows 7 target).
+D:\github\boostasio-learn\AsyncServer\Session.cpp(29,15): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
   AsyncServer.vcxproj -> D:\github\boostasio-learn\AsyncServer\x64\Debug\AsyncServer.exe
