@@ -1,0 +1,14 @@
+﻿  Session.cpp
+D:\github\AsyncServer02 + SyncClient02\AsyncServer02\Session.cpp(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\github\AsyncServer02 + SyncClient02\AsyncServer02\Session.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+  (编译源文件“Session.cpp”)
+  
+  Please define _WIN32_WINNT or _WIN32_WINDOWS appropriately. For example:
+  - add -D_WIN32_WINNT=0x0601 to the compiler command line; or
+  - add _WIN32_WINNT=0x0601 to your project's Preprocessor Definitions.
+  Assuming _WIN32_WINNT=0x0601 (i.e. Windows 7 target).
+D:\github\AsyncServer02 + SyncClient02\AsyncServer02\Session.cpp(83,33): warning C4267: “+=”: 从“size_t”转换到“int”，可能丢失数据
+D:\github\AsyncServer02 + SyncClient02\AsyncServer02\Session.cpp(111,32): warning C4267: “+=”: 从“size_t”转换到“int”，可能丢失数据
+D:\github\AsyncServer02 + SyncClient02\AsyncServer02\Session.cpp(148,31): warning C4267: “+=”: 从“size_t”转换到“int”，可能丢失数据
+  LINK : 没有找到 D:\github\AsyncServer02 + SyncClient02\AsyncServer02\x64\Debug\AsyncServer.exe 或上一个增量链接没有生成它；正在执行完全链接
+  AsyncServer.vcxproj -> D:\github\AsyncServer02 + SyncClient02\AsyncServer02\x64\Debug\AsyncServer.exe
